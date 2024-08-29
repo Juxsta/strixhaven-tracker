@@ -3,6 +3,10 @@
 ## Overview
 Strixhaven Tracker is a comprehensive tool designed to manage and track the progress of players in the Strixhaven: Curriculum of Chaos adventure, a crossover between Dungeons & Dragons and Magic: The Gathering. This application allows users to manage relationships, report cards, extracurricular activities, and job assignments within the Strixhaven university setting.
 
+Supports both Mobile and Desktop:
+![image](https://github.com/user-attachments/assets/81d3d92a-c596-4f0c-8328-4da5f24f8670)
+![image](https://github.com/user-attachments/assets/50dd7400-5bca-4aaf-b262-7ea139055d7e)
+
 ## Features
 
 - **Relationship Management**: Track and manage character relationships, including points, types, and special boons or banes. See the relevant code in [Relationships.tsx](typescript:src/components/Relationships.tsx) 
