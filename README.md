@@ -1,46 +1,53 @@
-# Getting Started with Create React App
+# Strixhaven Tracker
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview
+Strixhaven Tracker is a comprehensive tool designed to manage and track the progress of players in the Strixhaven: Curriculum of Chaos adventure, a crossover between Dungeons & Dragons and Magic: The Gathering. This application allows users to manage relationships, report cards, extracurricular activities, and job assignments within the Strixhaven university setting.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- **Relationship Management**: Track and manage character relationships, including points, types, and special boons or banes. See the relevant code in [Relationships.tsx](typescript:src/components/Relationships.tsx) 
 
-### `npm start`
+- **Report Cards**: Monitor academic performance through customizable report cards for each year, reflecting passed and failed exams, skills used, and rerolls. See the relevant code in [ReportCards.tsx](typescript:src/components/ReportCards.tsx) 
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- **Extracurricular Activities**: Assign characters to various clubs and societies, tracking the skills they gain and their roles within these groups. See the relevant code in [Extracurriculars.tsx](typescript:src/components/Extracurriculars.tsx) 
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- **Job Assignments**: Manage part-time jobs alongside academic activities, including details about employers and coworkers. See the relevant code in [Job.tsx](typescript:src/components/Job.tsx) 
 
-### `npm test`
+- **Data Import/Export**: Easily export and import your game data to and from local storage to ensure no progress is lost.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Installation
 
-### `npm run build`
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Juxsta/strixhaven-tracker.git
+   ```
+2. Navigate to the project directory:
+   ```bash
+   cd strixhaven-tracker
+   ```
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+4. Start the application:
+   ```bash
+   npm start
+   ```
+g
+## Usage
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+After launching the app, navigate through the tabs to access different features:
+- **Relationships**: Add or modify character relationships.
+- **Report Cards**: View or update academic records.
+- **Extracurriculars**: Assign characters to activities and track their involvement.
+- **Jobs**: Manage job assignments and interactions with coworkers.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Use the import/export buttons to save or load your data.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Contributing
 
-### `npm run eject`
+Contributions are welcome! Please fork the repository and submit pull requests with your proposed changes.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## License
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
