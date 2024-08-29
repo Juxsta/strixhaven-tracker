@@ -1,9 +1,11 @@
 import React from 'react';
 import { Extracurricular } from '../types';
 import useStore from '../store/useStore';
-import { Table, Button, Checkbox, Select, Badge, Card } from 'flowbite-react';
+import { Table, Button, Checkbox, Select, Badge, Card, Label } from 'flowbite-react';
 import { EXTRA_CURRICULARS } from '../const/extracurriculars';
 import { HiPlus } from 'react-icons/hi';
+import DNDBeyondLink from './DNDBeyondLink';
+import { HiTrash } from 'react-icons/hi';
 const Extracurriculars: React.FC = () => {
   const { studentActivities, addExtracurricular, updateExtracurricular, deleteExtracurricular } = useStore(
     (state) => state
@@ -33,9 +35,85 @@ const Extracurriculars: React.FC = () => {
     deleteExtracurricular(index);
   };
 
-  return (
-    <Card className="mt-4">
-      <h2 className="text-2xl font-bold mb-4 text-purple-700">Extracurriculars</h2>
+  const renderMobileView = () => (
+    <div className="space-y-4">
+      {extracurriculars.map((extracurricular, index) => (
+        <Card key={index}>
+          <div className="space-y-4">
+            <div>
+              <Label className="block mb-2 font-bold">Name</Label>
+              <div className="flex items-center space-x-2">
+                {extracurricular.name && (
+                  <DNDBeyondLink
+                    text={extracurricular.name}
+                    baseUrl="https://dndbeyond.com/sources/dnd/sacoc/"
+                    section="school-is-in-session#"
+                  />
+                )}
+                <Select
+                  id={`extracurricular-select-${index}`}
+                  value={extracurricular.name}
+                  onChange={(e) => handleInputChange(index, 'name', e.target.value)}
+                  className="flex-grow"
+                >
+                  <option value="">Select an Extracurricular</option>
+                  {EXTRA_CURRICULARS.map((ec) => (
+                    <option key={ec.name} value={ec.name}>
+                      {ec.name}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+            </div>
+            <div className="flex justify-between items-center">
+              <div className="flex-1">
+                <Label className="block mb-2 font-bold">D4 Used</Label>
+                <Checkbox
+                  checked={extracurricular.d4Used}
+                  onChange={(e) => handleInputChange(index, 'd4Used', e.target.checked)}
+                />
+              </div>
+              <div className="flex-1">
+                <Label className="block mb-2 font-bold">Skills</Label>
+                <div className="flex flex-wrap gap-2">
+                  {extracurricular.skills.map((skill, skillIndex) => (
+                    <Badge key={skillIndex} color="purple">
+                      {skill}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div>
+              <Label className="block mb-2 font-bold">Member</Label>
+              <Select
+                id={`member-select-${index}`}
+                value={extracurricular.member}
+                onChange={(e) => handleInputChange(index, 'member', e.target.value)}
+                className="w-full"
+              >
+                <option value="">Select a Member</option>
+                {EXTRA_CURRICULARS.find((ec) => ec.name === extracurricular.name)?.members.map((member) => (
+                  <option key={member} value={member}>
+                    {member}
+                  </option>
+                ))}
+              </Select>
+            </div>
+            {index > 0 && (
+              <Button color="failure" className="w-full" onClick={() => handleDelete(index)}>
+                <HiTrash className="h-5 w-5" />
+              </Button>
+            )}
+          </div>
+        </Card>
+      ))}
+    </div>
+  );
+
+  const renderDesktopView = () => (
+    <div className="space-y-4">
+
       <Table>
         <Table.Head>
           <Table.HeadCell>Name</Table.HeadCell>
@@ -52,14 +130,11 @@ const Extracurriculars: React.FC = () => {
               <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                 <div className="flex items-center">
                   {extracurricular.name && (
-                    <a
-                      href={`https://dndbeyond.com/sources/dnd/sacoc/school-is-in-session#${extracurricular.name.replace(/[\s""]/g, '')}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mr-2 text-red-500 hover:text-red-700"
-                    >
-                      &amp;
-                    </a>
+                    <DNDBeyondLink
+                      text={extracurricular.name}
+                      baseUrl="https://dndbeyond.com/sources/dnd/sacoc/"
+                      section="school-is-in-session#"
+                    />
                   )}
                   <Select
                     id={`extracurricular-select-${index}`}
@@ -94,17 +169,11 @@ const Extracurriculars: React.FC = () => {
               <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                 <div className="flex items-center">
                   {extracurricular.member && (
-                    <a
-                      href={`https://dndbeyond.com/sources/dnd/sacoc/relationships#${extracurricular.member.replace(
-                        /[\s""]/g,
-                        ''
-                      )}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mr-2 text-red-500 hover:text-red-700"
-                    >
-                      &amp;
-                    </a>
+                    <DNDBeyondLink
+                      text={extracurricular.member}
+                      baseUrl="https://dndbeyond.com/sources/dnd/sacoc/"
+                      section="relationships#"
+                    />
                   )}
                   <Select
                     id={`member-select-${index}`}
@@ -125,7 +194,7 @@ const Extracurriculars: React.FC = () => {
                 <div className="flex justify-end">
                   {index > 0 && (
                     <Button color="failure" size="sm" onClick={() => handleDelete(index)}>
-                      🗑️
+                      <HiTrash className="h-5 w-5" />
                     </Button>
                   )}
                 </div>
@@ -134,6 +203,24 @@ const Extracurriculars: React.FC = () => {
           ))}
         </Table.Body>
       </Table>
+      {extracurriculars.length < 2 && (
+        <Button color="purple" onClick={handleAddNewExtracurricular} className="mt-4">
+          <HiPlus className="mr-2 h-5 w-5" />
+          Add Extracurricular
+        </Button>
+      )}
+    </div>
+  );
+
+  return (
+    <Card className="mt-4">
+      <h2 className="text-2xl font-bold mb-4 text-purple-700">Extracurriculars</h2>
+      <div className="hidden md:block">
+        {renderDesktopView()}
+      </div>
+      <div className="md:hidden">
+        {renderMobileView()}
+      </div>
       {extracurriculars.length < 2 && (
         <Button color="purple" onClick={handleAddNewExtracurricular} className="mt-4">
           <HiPlus className="mr-2 h-5 w-5" />

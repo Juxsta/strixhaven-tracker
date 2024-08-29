@@ -62,31 +62,42 @@ const useStore = create(
               studentActivities: useStore.getState().studentActivities,
             };
             const jsonData = JSON.stringify(data);
-            navigator.clipboard.writeText(jsonData);
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'strixhaven.sav';
+            a.click();
+            URL.revokeObjectURL(url);
           },
-          importData: async () => {
+          importData: async (file: Blob) => {
             try {
-              const clipboardData = await navigator.clipboard.readText();
-              const parsedData = JSON.parse(clipboardData);
-              set({
-                relationships: parsedData.relationships || [],
-                reportCards: parsedData.reportCards || {
-                  'Year 1': [],
-                  'Year 2': [],
-                  'Year 3': [],
-                  'Year 4': [],
-                },
-                studentActivities: parsedData.studentActivities || {
-                  extracurriculars: [
-                    { name: '', d4Used: false, skills: [], member: '' },
-                    { name: '', d4Used: false, skills: [], member: '' },
-                  ],
-                  job: null,
-                },
-              });
-              console.log('Data imported from clipboard!');
+              const reader = new FileReader();
+              reader.onload = async (e) => {
+                if (!e.target || typeof e.target.result !== 'string') return; // Ensure e.target.result is a string
+                const text = e.target.result;
+                const parsedData = JSON.parse(text);
+                set({
+                  relationships: parsedData.relationships || [],
+                  reportCards: parsedData.reportCards || {
+                    'Year 1': [],
+                    'Year 2': [],
+                    'Year 3': [],
+                    'Year 4': [],
+                  },
+                  studentActivities: parsedData.studentActivities || {
+                    extracurriculars: [
+                      { name: '', d4Used: false, skills: [], member: '' },
+                      { name: '', d4Used: false, skills: [], member: '' },
+                    ],
+                    job: null,
+                  },
+                });
+                console.log('Data imported from file!');
+              };
+              reader.readAsText(file);
             } catch (error) {
-              console.error('Error importing data from clipboard:', error);
+              console.error('Error importing data from file:', error);
             }
           },
         })

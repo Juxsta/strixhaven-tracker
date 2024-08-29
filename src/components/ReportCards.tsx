@@ -3,12 +3,15 @@ import { ReportCards as Cards, ReportCardEntry, Result, Skills } from '../types'
 import useStore from '../store/useStore';
 import { Accordion, Badge, Button, Card, Checkbox, Label, Select, TextInput, ToggleSwitch } from 'flowbite-react';
 import { HiPlus, HiTrash } from 'react-icons/hi';
+import MobileNumberInput from './MobileNumberInput'; // Import the MobileNumberInput component
 
 const ReportCards: React.FC = () => {
-  const reportCards = useStore((state) => state.reportCards);
-  const updateReportCardEntry = useStore((state) => state.updateReportCardEntry);
-  const addReportCardEntry = useStore((state) => state.addReportCardEntry);
-  const removeReportCardEntry = useStore((state) => state.removeReportCardEntry);
+  const { reportCards, updateReportCardEntry, addReportCardEntry, removeReportCardEntry } = useStore((state) => ({
+    reportCards: state.reportCards,
+    updateReportCardEntry: state.updateReportCardEntry,
+    addReportCardEntry: state.addReportCardEntry,
+    removeReportCardEntry: state.removeReportCardEntry,
+  }));
 
   const handleQuestionToggle = (year: keyof Cards, examIndex: number, question: 'question1' | 'question2') => {
     const entries = reportCards[year] as ReportCardEntry[];
@@ -25,18 +28,6 @@ const ReportCards: React.FC = () => {
         ...updatedEntry,
         result: result,
         d4s: d4s,
-      });
-    }
-  };
-
-  const handleRerollChange = (year: keyof Cards, examIndex: number, value: number) => {
-    const entries = reportCards[year] as ReportCardEntry[];
-    const currentEntry = entries[examIndex];
-
-    if (currentEntry) {
-      updateReportCardEntry(year, examIndex, {
-        ...currentEntry,
-        rerollsAvailable: value,
       });
     }
   };
@@ -77,13 +68,17 @@ const ReportCards: React.FC = () => {
   return (
     <Card className="mt-4">
       <h2 className="text-2xl font-bold mb-4 text-purple-700">Report Cards</h2>
-      <Accordion>
+      <Accordion
+        alwaysOpen={false}
+      >
         {Object.entries(reportCards).map(([year, entries]) => (
-          <Accordion.Panel key={year}>
+          <Accordion.Panel
+            key={year}
+          >
             <Accordion.Title>{year}</Accordion.Title>
             <Accordion.Content>
               {entries.map((entry: ReportCardEntry, examIndex: number) => (
-                <div className='flex'>
+                <div className='flex flex-col md:flex-row' key={examIndex}>
                   <Card
                     key={examIndex}
                     className={`flex-grow mt-4 rounded-br-none rounded-tr-none ${entry.result === Result.Failed
@@ -148,14 +143,38 @@ const ReportCards: React.FC = () => {
                       </div>
                       <div className="mb-2">
                         <Label htmlFor={`rerolls-${year}-${examIndex}`}>Rerolls Available:</Label>
-                        <TextInput
-                          id={`rerolls-${year}-${examIndex}`}
-                          type="number"
-                          min="0"
-                          max="2"
-                          value={entry.rerollsAvailable}
-                          onChange={(e) => handleRerollChange(year as keyof Cards, examIndex, parseInt(e.target.value, 10) || 0)}
-                        />
+                        <div className="md:hidden">
+                          <MobileNumberInput
+                            className="mt-2"
+                            value={entry.rerollsAvailable}
+                            onIncrement={() => updateReportCardEntry(year as keyof Cards, examIndex, {
+                              ...entry,
+                              rerollsAvailable: Math.min(entry.rerollsAvailable + 1, 2),
+                            })}
+                            onDecrement={() => updateReportCardEntry(year as keyof Cards, examIndex, {
+                              ...entry,
+                              rerollsAvailable: Math.max(0, entry.rerollsAvailable - 1),
+                            })}
+                            onChange={(value) => updateReportCardEntry(year as keyof Cards, examIndex, {
+                              ...entry,
+                              rerollsAvailable: value,
+                            })}
+                          />
+                        </div>
+                        <div className="hidden md:block">
+                          <TextInput
+                            id={`rerolls-${year}-${examIndex}`}
+                            type="number"
+                            min="0"
+                            max="2"
+                            className="w-full text-center"
+                            value={entry.rerollsAvailable}
+                            onChange={(e) => updateReportCardEntry(year as keyof Cards, examIndex, {
+                              ...entry,
+                              rerollsAvailable: parseInt(e.target.value, 10) || 0,
+                            })}
+                          />
+                        </div>
                         {entry.rerollsAvailable > 0 && (
                           <div className="mt-2 space-x-2 flex items-center">
                             {Array.from({ length: entry.rerollsAvailable }).map((_, rerollIndex) => (
@@ -234,14 +253,13 @@ const ReportCards: React.FC = () => {
                   {examIndex > 0 && (
                     <Button
                       color="failure"
-                      className="flex items-center justify-center mt-4 rounded-bl-none rounded-tl-none" // Added classes for centering content
+                      className="md:flex items-center justify-center mt-4 rounded-bl-none rounded-tl-none md:ml-2" // Adjusted classes for responsive design
                       onClick={() => removeReportCardEntry(year as keyof Cards, examIndex)}
                     >
                       <HiTrash className="h-5 w-5" />
                     </Button>
                   )}
                 </div>
-
               ))}
               <Button
                 color="purple"

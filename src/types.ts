@@ -42,9 +42,8 @@ export interface Relationship {
   
   export interface Job {
     employer: string;
-    jobTitle: string; // More descriptive name than just "job"
+    jobTitle: string; 
     coworker: string;
-    d4Used: boolean; // Track if the d4 from this job is used
   }
   
   export interface JobOption {
